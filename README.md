@@ -45,7 +45,7 @@ echo "Will update, As Soon As Possible."
 
 ```
 $ sech3r -h
-        __       ____
+     /  __       ____
  ()  _ / () |)    __/ ,_
  /\ |/|     |/\     \/  |
 /(_)|_/\___/|  |/\__/   |/
@@ -76,11 +76,11 @@ Examples:
 ## Output
 
 ```
-        __       ____
+     /  __       ____
  ()  _ / () |)    __/ ,_
  /\ |/|     |/\     \/  |
 /(_)|_/\___/|  |/\__/   |/  v3.0  by --naryal2580
-[*] Started [at] 1.8.2019│19:23:38
+[*] Started [at] 1.8.2019│19:56:39
 [<] URL: demo.testfire.net
 [*] Requesting to: http://demo.testfire.net/
 [!] Non-HTTPS request: Someone else can interact.
@@ -97,7 +97,7 @@ Examples:
 [-] Feature-Policy: Not Present!
 [-] Report-To: Not Present!
 [-] NEL: Not Present!
-[*] Halted [at] 1.8.2019│19:23:38
+[*] Halted [at] 1.8.2019│19:56:40
 ```
 // An Asciinema demo will be added soon.
 
