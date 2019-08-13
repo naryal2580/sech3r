@@ -43,7 +43,8 @@ def main(urls=[], verbose=False, searchForVuln=False,
         if urls:
             printTakenInput('  '.join(urls), 'URL', color)
         else:
-            urls = coolInput('URL(s) separated with double <space>', color)
+            urls = coolInput('URL(s) separated with double <space>', color).\
+                                                                    split('  ')
         for url in urls:
             headers = getHTTPheaders(url, color, verbose, followRedirects)
             checkVersionDisclosure(headers, searchForVuln, verbose, color)
