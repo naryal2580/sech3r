@@ -94,7 +94,7 @@ def cls():
 
 
 def banner(version, author='naryal2580', color=True):
-    print('\33]0;SeCh3r v3.0\a', end='')
+    print('\33]0;SéCh3r_{} by {}\a'.format(version, author), end='')
     if color:
         logo = '''
      /  __       ____

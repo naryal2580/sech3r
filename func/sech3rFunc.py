@@ -157,8 +157,9 @@ def checkSecurityHeaders(headers, color=True):
                        ]
     for security_header in security_headers:
         if security_header in headers:
-            print(good('{} -> {}'.format(security_header,
-                                         headers[security_header]), color))
+            print(good('{} -> {}'.format(
+                                      security_header, headers[security_header]
+                                        ), color))
         else:
             print(bad('{} -> Not Present!'.format(security_header), color))
 
@@ -172,8 +173,8 @@ def checkVersionDisclosure(headers, searchForVuln=False,
             for digit in digits:
                 if digit in headers[header]:
                     print(bad('Version Disclosure Present -> {}'.format(
-                                                            headers[header]
-                                                                    ), color))
+                                                                headers[header]
+                                                                     ), color))
                     if searchForVuln:
                         if verbose:
                             print(info('Googling -> Yeah!', color))
@@ -184,6 +185,6 @@ def checkVersionDisclosure(headers, searchForVuln=False,
                 else:
                     continue
     if 'X-Powered-By' in headers:
-        print(bad('Version Disclosure Present -> {}'.format(
-                                                     headers['X-Powered-By']
+        print(bad("Version Disclosure Present -> {}".format(
+                                                        headers['X-Powered-By']
                                                             ), color))
