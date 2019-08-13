@@ -4,7 +4,7 @@ import ssl
 from http_parser.http import HttpStream as httpStream
 from http_parser.reader import SocketReader as socketReader
 from string import digits
-from .style import info, warn, good, bad
+from naryal2580.style import info, warn, good, bad
 from webbrowser import open_new_tab as openNewTab_ofWebBrowser
 
 
