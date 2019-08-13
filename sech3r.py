@@ -8,14 +8,14 @@
 
 Usage:
     sech3r [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
-    sech3r <url> [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
+    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
     sech3r -h | --help
     sech3r -V | --version
 
 Options:
     -h --help           Display help, basically this screen.
     -V --version        Display version number.
-    <url>               Optional URL input from the Command-Line.
+    <urls>               Optional URL(s) input from the Command-Line.
     -v --verbose        Show verbose output.
     -s --searchForVuln  Open Default WebBrowser, Googling for Vulnerabilities.
     -r --noRedirects    Do not follow HTTP-redirects.
@@ -37,16 +37,17 @@ from func import banner, fetchFormattedTime, info, printTakenInput, coolInput,\
 from docopt import docopt
 
 
-def main(url='', verbose=False, searchForVuln=False,
+def main(urls=[], verbose=False, searchForVuln=False,
          followRedirects=True, color=True):
     try:
-        if url:
-            printTakenInput(url, 'URL', color)
+        if urls:
+            printTakenInput('  '.join(urls), 'URL', color)
         else:
-            url = coolInput('URL', color)
-        headers = getHTTPheaders(url, color, verbose, followRedirects)
-        checkVersionDisclosure(headers, searchForVuln, verbose, color)
-        checkSecurityHeaders(headers, color)
+            urls = coolInput('URL(s) separated with double <space>', color)
+        for url in urls:
+            headers = getHTTPheaders(url, color, verbose, followRedirects)
+            checkVersionDisclosure(headers, searchForVuln, verbose, color)
+            checkSecurityHeaders(headers, color)
     except KeyboardInterrupt:
         print('\b\b'+bad('Recieved SIGINT, terminating.', color))
         coolExit(0, color)
@@ -85,9 +86,10 @@ if __name__ == '__main__':
             print(info('Redirects -> Do not follow', color))
         followRedirects = False
 
-    if arguments['<url>']:
-        main(arguments['<url>'], verbose, searchForVuln,
+    if arguments['<urls>']:
+        urls = arguments['<urls>']
+        main(urls, verbose, searchForVuln,
              followRedirects, color)
     else:
-        main('', verbose, searchForVuln, followRedirects, color)
+        main([], verbose, searchForVuln, followRedirects, color)
     coolExit(0, color)
