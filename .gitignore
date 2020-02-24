@@ -3,3 +3,4 @@ __pycache__/
 *.spec
 build/
 dist/
+*_dontAdd_*
