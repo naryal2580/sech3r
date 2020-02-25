@@ -3,4 +3,5 @@ __pycache__/
 *.spec
 build/
 dist/
+*.egg-info/
 *_dontAdd_*

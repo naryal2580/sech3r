@@ -5,7 +5,7 @@ with open("./README.md") as f:
 
 setup(
     name='sech3r',
-    version='4',
+    version='4.0',
     author="Captain Nick Lucifer",
     author_email="naryal2580@gmail.com",
     url="https://github.com/naryal2580/sech3r",
@@ -14,7 +14,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    py_modules=['secher'],
+    py_modules=['sech3r'],
+    scripts=['bin/sech3r'],
     classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",

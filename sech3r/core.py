@@ -5,6 +5,7 @@ from .style import *
 
 
 def parseUrl(url):
+    """Regex based URL parser"""
     pattern = (
                r'^'
                r'((?P<protocol>.+?)://)?'
@@ -22,6 +23,7 @@ def parseUrl(url):
 
 
 def validateUrl(url):
+    """Validation if protocol is specified"""
     parsedUrl = parseUrl(url)
     if not parsedUrl['protocol']:
         url = 'http://' + url
@@ -29,6 +31,7 @@ def validateUrl(url):
 
 
 def getHeaders(url):
+    """Requests Headers of queried URL"""
     try:
         req = Request(
                         url,
@@ -46,6 +49,7 @@ def getHeaders(url):
 
 
 def checkSecHeads(headers):
+    """Checks if security headers present, or not"""
     headersPresent = {}
     headersNotPresent = []
     security_headers = [
@@ -71,6 +75,7 @@ def checkSecHeads(headers):
 
 
 def checkInfoHeads(headers, searchForVuln=False, color=True):
+    """Checking for informative headers"""
     version_disclosure_headers = [
                                     'Server',
                                     'X-AspNet-Version',
