@@ -30,12 +30,12 @@ Examples:
 """
 
 __author__ = "naryal2580"
-__version__ = "4.1"
+__version__ = "4.2"
 
 from sech3r import *
 from docopt import docopt
 
-def main(urls=[], verbose=False, color=True):
+def main(urls=[], verbose=False, search4cves=False, color=True):
     if urls:
         print(takenInput(f"URL(s) separated with double <space> -> {'  '.join(urls)}", color))
 
@@ -66,6 +66,9 @@ def main(urls=[], verbose=False, color=True):
             if secHeadsNotPresent:
                 prnHeads(secHeadsNotPresent, color)
             if vulnHeads:
+                if search4cves:
+                    for vulnHead in vulnHeads:
+                        google(f'{vulnHeads[vulnHead]} CVE')
                 prnHeads(vulnHeads, color)
             if infoHeads:
                 prnHeads(infoHeads, color, False)
@@ -75,13 +78,13 @@ def main(urls=[], verbose=False, color=True):
 if __name__ == "__main__":
     args = docopt(__doc__, version=__version__)
     color = True
-    verbose = False
+    verbose = search4cves = False
     if args['--noColor']:
         color = False
     if args['--verbose']:
         verbose = True
     if args['--searchForVuln']:
-        print('works.')
+        search4cves = True
     banner(__version__, color)
     if verbose:
         print(info('Verbosity -> Enabled', color))
@@ -89,9 +92,14 @@ if __name__ == "__main__":
             print(info('Colorized Output -> Yeah'))
         else:
             print(info('Much fanciness -> Nope', False))
+        if search4cves:
+            print(info('Google for CVEs -> Yup!'))
+        else:
+            print(info('Interested in CVEs -> Nah'))
+
     if args['<urls>']:
-        main(args['<urls>'], verbose, color)
+        main(args['<urls>'], verbose, search4cves, color)
     else:
-        main([], verbose, color)
+        main([], verbose, search4cves, color)
 
     coolExit(0, color)

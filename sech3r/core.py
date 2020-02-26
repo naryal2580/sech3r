@@ -36,7 +36,7 @@ def getHeaders(url):
         req = Request(
                         url,
                         data=None,
-                        headers={'User-Agent': 'sech3r/0.1'}
+                        headers={'User-Agent': 'sech3r/4.2'}
                     )
         resp = request(req)
     except Exception as excptn:
