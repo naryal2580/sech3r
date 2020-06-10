@@ -52,7 +52,7 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=Tru
         url = validateUrl(url)
         if url.startswith('http://'):
             print(warn('Warning -> Crafting a non TLS request', color))
-        heads = getHeaders(url, noRedirects)
+        heads = getHeaders(url, noRedirects, color)
         if heads:
             if verbose:
                 print(info('Response Headers -> below:', color))
