@@ -30,12 +30,12 @@ Examples:
 """
 
 __author__ = "naryal2580"
-__version__ = "4.2"
+__version__ = "4.3"
 
 from sech3r import *
 from docopt import docopt
 
-def main(urls=[], verbose=False, search4cves=False, color=True):
+def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=True):
     if urls:
         print(takenInput(f"URL(s) separated with double <space> -> {'  '.join(urls)}", color))
 
@@ -49,12 +49,12 @@ def main(urls=[], verbose=False, search4cves=False, color=True):
         url = validateUrl(url)
         if url.startswith('http://'):
             print(warn('Warning -> Crafting a non TLS request', color))
-        heads = getHeaders(url)
+        heads = getHeaders(url, noRedirects)
         if heads:
             if verbose:
-                print(info('Response Headers -> ', color))
+                print(info('Response Headers -> below:', color))
                 for head in heads:
-                    print(f'{head}: {heads[head]}')
+                    print(takenInput(f'{head}: {heads[head]}', color))
             secHeads = checkSecHeads(heads)
             secHeadsPresent = secHeads[0]
             secHeadsNotPresent = secHeads[1]
@@ -76,15 +76,17 @@ def main(urls=[], verbose=False, search4cves=False, color=True):
 
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version=__version__)
+    args = docopt(__doc__, version='SéCh3r v{}'.format(__version__))
     color = True
-    verbose = search4cves = False
+    verbose = search4cves = noRedirects = False
     if args['--noColor']:
         color = False
     if args['--verbose']:
         verbose = True
     if args['--searchForVuln']:
         search4cves = True
+    if args['--noRedirects']:
+        noRedirects = True
     banner(__version__, color)
     if verbose:
         print(info('Verbosity -> Enabled', color))
@@ -96,10 +98,14 @@ if __name__ == "__main__":
             print(info('Google for CVEs -> Yup!'))
         else:
             print(info('Interested in CVEs -> Nah'))
+        if noRedirects:
+            print(info('Follow Redirects -> No'))
+        else:
+            print(info('Do Follow redirects -> Sure'))
 
     if args['<urls>']:
-        main(args['<urls>'], verbose, search4cves, color)
+        main(args['<urls>'], verbose, search4cves, noRedirects, color)
     else:
-        main([], verbose, search4cves, color)
+        main([], verbose, search4cves, noRedirects, color)
 
     coolExit(0, color)

@@ -1,4 +1,4 @@
-# SéCh3r v4.2
+# SéCh3r v4.3
 A Security HTTP-Header Checker.    # Demoisturize it!
 
 
@@ -32,7 +32,7 @@ In order to get this tool running, follow the instruction below:
 
 
 
-## Usgae
+## Usage
 
 ```
 $ sech3r -h
@@ -64,11 +64,9 @@ Examples:
     sech3r -vsrc
 ```
 
-**NOTE**: I am still working on no-redirection feature.
 
 ## TODOs
 
-- Added No redirect support
 - Input of URLs from a textfile
 - Output to a file
 - Additional Header Assesments for better output

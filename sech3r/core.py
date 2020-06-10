@@ -1,11 +1,15 @@
 from re import compile as reCompile
-from urllib.request import urlopen as request
-from urllib.request import Request
+from urllib import request
 from .style import *
 
 
+class NoRedirects(request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def parseUrl(url):
-    """Regex based URL parser"""
+    """Regex based URL parser, copied and pasted but lost the source :("""
     pattern = (
                r'^'
                r'((?P<protocol>.+?)://)?'
@@ -23,24 +27,32 @@ def parseUrl(url):
 
 
 def validateUrl(url):
-    """Validation if protocol is specified"""
+    """Validation if protocol is specified, prepend if not"""
     parsedUrl = parseUrl(url)
     if not parsedUrl['protocol']:
         url = 'http://' + url
     return url
 
 
-def getHeaders(url):
+def getHeaders(url, noRedirects=False, color=True):
     """Requests Headers of queried URL"""
     try:
-        req = Request(
-                        url,
-                        data=None,
-                        headers={'User-Agent': 'sech3r/4.2'}
-                    )
-        resp = request(req)
+        if noRedirects:
+            opener = request.build_opener(NoRedirects)
+            request.install_opener(opener)
+        req = request.Request(
+                                url,
+                                data=None,
+                                headers={'User-Agent': 'sech3r/4.2'}
+                            )
+        resp = request.urlopen(req)
+        if resp.url != url:
+            if resp.url.startswith('https://'):
+                print(good(f'Redirected to -> {resp.url}', color))
+            else:
+                print(info(f'Redirected to -> {resp.url}', color))
     except Exception as excptn:
-        print(bad(str(excptn).replace(': ', ' -> ')))
+        print(bad(str(excptn).replace(': ', ' -> '), color))
         if 'HTTP Error' in str(excptn):
             resp = excptn
         else:
@@ -75,7 +87,7 @@ def checkSecHeads(headers):
 
 
 def checkInfoHeads(headers, searchForVuln=False, color=True):
-    """Checking for informative headers"""
+    """Checks for informative headers"""
     version_disclosure_headers = [
                                     'Server',
                                     'X-AspNet-Version',
