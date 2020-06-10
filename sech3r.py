@@ -29,11 +29,14 @@ Examples:
     sech3r -vsrc
 """
 
-__author__ = "naryal2580"
-__version__ = "4.3"
 
-from sech3r import *
+__author__ = "naryal2580"
+__version__ = "4.4"
+
+
+from secher import *
 from docopt import docopt
+
 
 def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=True):
     if urls:
@@ -75,7 +78,7 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=Tru
             print()
 
 
-if __name__ == "__main__":
+def run():
     args = docopt(__doc__, version='SéCh3r v{}'.format(__version__))
     color = True
     verbose = search4cves = noRedirects = False
@@ -109,3 +112,7 @@ if __name__ == "__main__":
         main([], verbose, search4cves, noRedirects, color)
 
     coolExit(0, color)
+
+
+if __name__ == "__main__":
+    run()

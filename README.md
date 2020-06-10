@@ -75,4 +75,4 @@ Examples:
 
 ----
 
-</> with ❤️ & ✌️ --naryal2580
+</> with <3 --naryal2580
