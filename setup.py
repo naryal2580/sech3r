@@ -5,7 +5,7 @@ with open("./README.md") as f:
 
 setup(
     name='sech3r',
-    version='4.5',
+    version='4.6',
     author="Captain Nick Lucifer",
     author_email="naryal2580@gmail.com",
     url="https://github.com/naryal2580/sech3r",

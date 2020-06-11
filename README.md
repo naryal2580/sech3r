@@ -1,4 +1,4 @@
-# SéCh3r v4.5
+# SéCh3r v4.6
 A Security HTTP-Header Checker.    # Demoisturize it!
 
 
@@ -24,10 +24,16 @@ $ python3 -m pip install sech3r  # Super User permission, accordingly.
 ```
 $ git clone https://github.com/naryal2580/sech3r.git
 $ cd sech3r
-$ python3 setup.py install # Super User permission, accordingly.
+$ python3 setup.py install  # Super User permission, accordingly.
 ```
 
-##### Note: Usage without installation is also possible, just run the `sech3r.py` after installing dependencies from `requirements.txt`
+#### Use without installation
+```
+$ git clone https://github.com/naryal2580/sech3r.git
+$ cd sech3r
+$ python3 -m pip install -U -r requirements.txt  # Super User permission, accordingly.
+$ python3 sech3r.py
+```
 
 
 
@@ -41,8 +47,8 @@ $ sech3r -h
 /(_)|_/\___/|  |/\__/   |/
 
 Usage:
-    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
-    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
+    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor]
+    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor]
     sech3r -h | --help
     sech3r -V | --version
 
@@ -53,6 +59,7 @@ Options:
     -v --verbose        Show verbose output.
     -s --searchForVuln  Open Default WebBrowser, Googling for Vulnerabilities.
     -r --noRedirects    Do not follow HTTP-redirects.
+    -i --insecure       Bypass TLS/SSL verification.
     -c --noColor        No Colours to be used for the Output.
 
 Examples:
@@ -60,7 +67,7 @@ Examples:
     sech3r demo.testfire.net -vs
     sech3r demo.testfire.net -vr
     sech3r demo.testfire.net -c
-    sech3r -vsrc
+    sech3r -vsirc
 ```
 
 

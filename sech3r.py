@@ -7,8 +7,8 @@
 /(_)|_/\___/|  |/\__/   |/
 
 Usage:
-    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
-    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--noColor]
+    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor]
+    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor]
     sech3r -h | --help
     sech3r -V | --version
 
@@ -19,6 +19,7 @@ Options:
     -v --verbose        Show verbose output.
     -s --searchForVuln  Open Default WebBrowser, Googling for Vulnerabilities.
     -r --noRedirects    Do not follow HTTP-redirects.
+    -i --insecure       Bypass TLS/SSL verification.
     -c --noColor        No Colours to be used for the Output.
 
 Examples:
@@ -26,18 +27,18 @@ Examples:
     sech3r demo.testfire.net -vs
     sech3r demo.testfire.net -vr
     sech3r demo.testfire.net -c
-    sech3r -vsrc
+    sech3r -vsirc
 """
 
 
 __author__ = "naryal2580"
-__version__ = "4.5"
+__version__ = "4.6"
 
 
 from secher import *
 
 
-def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=True):
+def main(urls=[], verbose=False, search4cves=False, noRedirects=False, insecure=False, color=True):
     """
     `main` Function of sech3r.
 
@@ -46,10 +47,11 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=Tru
             verbose (bool): Is verbosity necessary
             search4cves (bool): Shall tool search for CVEs from disclosed version
             noRedirects (bool): Shall redirections occur, while requesting for headers
+            insecure (bool): Ignore TLS/SSL warnings
             color (bool): Shall color be printed while function is running
         
         Returns:
-            url (str): URL string after prepending or modifying scheme to http
+            Nothing
     """
     if urls:
         print(takenInput(f"URL(s) separated with double <space> -> {'  '.join(urls)}", color))
@@ -64,7 +66,9 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=Tru
         url = validateUrl(url, color)
         if url.startswith('http://'):
             print(warn('Warning -> Crafting a non TLS request', color))
-        heads = getHeaders(url, noRedirects, color)
+        if insecure:
+            print(warn('Warning -> Bypassing TLS verification'))
+        heads = getHeaders(url, noRedirects, insecure, color)
         if heads:
             if verbose:
                 print(info('Response Headers -> below:', color))
@@ -103,7 +107,7 @@ def run():
     from docopt import docopt
     args = docopt(__doc__, version='SéCh3r v{}'.format(__version__))
     color = True
-    verbose = search4cves = noRedirects = False
+    verbose = search4cves = noRedirects = insecure = False
     if args['--noColor']:
         color = False
     if args['--verbose']:
@@ -112,6 +116,8 @@ def run():
         search4cves = True
     if args['--noRedirects']:
         noRedirects = True
+    if args['--insecure']:
+        insecure = True
     banner(__version__, color)
     if verbose:
         print(info('Verbosity -> Enabled', color))
@@ -120,18 +126,22 @@ def run():
         else:
             print(info('Much fanciness -> Nope', False))
         if search4cves:
-            print(info('Google for CVEs -> Yup!'))
+            print(info('Google for CVEs -> Yup!', color))
         else:
-            print(info('Interested in CVEs -> Nah'))
+            print(info('Interested in CVEs -> Nah', color))
         if noRedirects:
-            print(info('Follow Redirects -> No'))
+            print(info('Follow Redirects -> No', color))
         else:
-            print(info('Do Follow redirects -> Sure'))
+            print(info('Do Follow redirects -> Sure', color))
+        if insecure:
+            print(info('Bypass TLS/SSL verification -> Yea', color))
+        else:
+            print(info('Ignore TLS/SSL warnings -> Noo!', color))
 
     if args['<urls>']:
-        main(args['<urls>'], verbose, search4cves, noRedirects, color)
+        main(args['<urls>'], verbose, search4cves, noRedirects, insecure, color)
     else:
-        main([], verbose, search4cves, noRedirects, color)
+        main([], verbose, search4cves, noRedirects, insecure, color)
 
     coolExit(0, color)
 

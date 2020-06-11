@@ -1,5 +1,6 @@
 from urllib import request
 from urllib.parse import urlparse
+from ssl import _create_unverified_context
 from .style import *
 
 
@@ -35,13 +36,14 @@ def validateUrl(url, color=True):
     return url
 
 
-def getHeaders(url, noRedirects=False, color=True):
+def getHeaders(url, noRedirects=False, insecure=False, color=True):
     """
     Returns HTTP Headers of a queried URL.
 
         Parameters:
             url (str): URL string
             noRedirects (bool): Shall redirection be followed
+            insecure (bool): Ignore TLS/SSL warnings
             color (bool): Shall color be printed while function is running
         
         Returns:
@@ -56,7 +58,10 @@ def getHeaders(url, noRedirects=False, color=True):
                                 data=None,
                                 headers={'User-Agent': 'sech3r/4.2'}
                             )
-        resp = request.urlopen(req)
+        if not insecure:
+            resp = request.urlopen(req)
+        else:
+            resp = request.urlopen(req, context=_create_unverified_context())
         if resp.url != url:
             if resp.url.startswith('https://'):
                 print(good(f'Redirected to -> {resp.url}', color))
