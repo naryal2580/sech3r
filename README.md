@@ -69,8 +69,6 @@ Examples:
 - Input of URLs from a textfile
 - Output to a file
 - Additional Header Assesments for better output
-- Better APIs for chaining of this tool, via pip
-- Other misc. optimizations
 
 ----
 

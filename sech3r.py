@@ -55,7 +55,7 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=Tru
         print(takenInput(f"URL(s) separated with double <space> -> {'  '.join(urls)}", color))
 
     else:
-        urls = coolInput('URL(s) separated with double <space>', color).split(' ')
+        urls = coolInput('URL(s) separated with double <space>', color).split('  ')
     print(info(f'Started [at] {fetchFormatedTime()}  -> Now, Requesting', color), end='\n\n')
 
     for url in urls:
