@@ -1,4 +1,4 @@
-# SéCh3r v4.4
+# SéCh3r v4.5
 A Security HTTP-Header Checker.    # Demoisturize it!
 
 
