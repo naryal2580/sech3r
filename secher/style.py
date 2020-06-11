@@ -22,7 +22,7 @@ def banner(version, color=True):
     return None
 
 
-def prnHeads(headers, color=True, isVuln=True):
+def prnHeads(headers, color=True, isVuln=True, quiet=False):
     """
     Printing headers with fanciness
     
@@ -34,14 +34,19 @@ def prnHeads(headers, color=True, isVuln=True):
         Returns:
             None: Literally None object :p
     """
-    if isVuln:
-        if type(headers) != list:
-            for header in headers:
-                print(bad(f'{header} -> {headers[header]}', color))
+    if not quiet:
+        if isVuln:
+            if type(headers) != list:
+                for header in headers:
+                    print(bad(f'{header} -> {headers[header]}', color))
+            else:
+                for header in headers:
+                    print(bad(f'{header} -> Not Present', color))
         else:
             for header in headers:
-                print(bad(f'{header} -> Not Present', color))
+                print(info(f'{header} -> {headers[header]}', color))
     else:
-        for header in headers:
-            print(info(f'{header} -> {headers[header]}', color))
+        if type(headers) != list:
+            for header in headers:
+                print(f'{header}: {headers[header]}')
     return None

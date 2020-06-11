@@ -13,7 +13,7 @@ class NoRedirects(request.HTTPRedirectHandler):
 
 
 
-def validateUrl(url, color=True):
+def validateUrl(url, color=True, quiet=False):
     """
     Returns url string after adding scheme if not present, and modofying scheme if not http.
 
@@ -28,15 +28,16 @@ def validateUrl(url, color=True):
     if not parsedUrl.scheme:
         url = 'http://' + url
     elif parsedUrl.scheme not in ('http', 'https'):
-        print(bad(f'Scheme `{parsedUrl.scheme}` does not looks like of `http`', color))
-        print(info('Scheme modified to `http`', color))
+        if not quiet:
+            print(bad(f'Scheme `{parsedUrl.scheme}` does not looks like of `http`', color))
+            print(info('Scheme modified to `http`', color))
         url = url.split('://')
         url[0] = 'http'
         url = '://'.join(url)
     return url
 
 
-def getHeaders(url, noRedirects=False, insecure=False, color=True):
+def getHeaders(url, noRedirects=False, insecure=False, color=True, quiet=False):
     """
     Returns HTTP Headers of a queried URL.
 
@@ -63,12 +64,16 @@ def getHeaders(url, noRedirects=False, insecure=False, color=True):
         else:
             resp = request.urlopen(req, context=_create_unverified_context())
         if resp.url != url:
-            if resp.url.startswith('https://'):
-                print(good(f'Redirected to -> {resp.url}', color))
-            else:
-                print(info(f'Redirected to -> {resp.url}', color))
+            if not quiet:
+                if resp.url.startswith('https://'):
+                    print(good(f'Redirected to -> {resp.url}', color))
+                else:
+                    print(info(f'Redirected to -> {resp.url}', color))
     except Exception as excptn:
-        print(bad(str(excptn).replace(': ', ' -> '), color))
+        if not quiet:
+            print(bad(str(excptn).replace(': ', ' -> '), color))
+        else:
+            print(f'ERROR: {excptn}', end='\n\n')
         if 'HTTP Error' in str(excptn):
             resp = excptn
         else:
