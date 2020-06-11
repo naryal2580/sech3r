@@ -1,36 +1,27 @@
 from re import compile as reCompile
 from urllib import request
+from urllib.parse import urlparse
 from .style import *
 
 
 class NoRedirects(request.HTTPRedirectHandler):
+    """Class to handle HTTP Rediect"""
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         return None
 
 
-def parseUrl(url):
-    """Regex based URL parser, copied and pasted but lost the source :("""
-    pattern = (
-               r'^'
-               r'((?P<protocol>.+?)://)?'
-               r'((?P<user>.+?)(:(?P<password>.*?))?@)?'
-               r'(?P<host>.*?)'
-               r'(:(?P<port>\d+?))?'
-               r'(?P<path>/.*?)?'
-               r'(?P<query>[?].*?)?'
-               r'$'
-               )
-    regex = reCompile(pattern)
-    matches = regex.match(url)
-    matchesAsDict = matches.groupdict() if matches is not None else None
-    return matchesAsDict
 
-
-def validateUrl(url):
+def validateUrl(url, color=True):
     """Validation if protocol is specified, prepend if not"""
-    parsedUrl = parseUrl(url)
-    if not parsedUrl['protocol']:
+    parsedUrl = urlparse(url)
+    if not parsedUrl.scheme:
         url = 'http://' + url
+    elif parsedUrl.scheme not in ('http', 'https'):
+        print(bad(f'Scheme `{parsedUrl.scheme}` does not looks like of `http`', color))
+        print(info('Scheme modified to `http`', color))
+        url = url.split('://')
+        url[0] = 'http'
+        url = '://'.join(url)
     return url
 
 

@@ -1,6 +1,7 @@
 from stoyled import *
 
 def banner(version, color=True):
+    """Banner, just fanciness"""
     _banner = """
      /  __       ____
  ()  _ / () |)    __/ ,_
@@ -13,6 +14,7 @@ def banner(version, color=True):
 
 
 def prnHeads(headers, color=True, isVuln=True):
+    """Printing Headers, with colors"""
     if isVuln:
         if type(headers) != list:
             for header in headers:

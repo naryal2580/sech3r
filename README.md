@@ -1,4 +1,4 @@
-# SéCh3r v4.3
+# SéCh3r v4.4
 A Security HTTP-Header Checker.    # Demoisturize it!
 
 
@@ -16,19 +16,18 @@ In order to get this tool running, follow the instruction below:
 #### Installation via pip
 
 ```
-% python3 -m pip install sech3r  # Super User permission, accordingly.
+$ python3 -m pip install sech3r  # Super User permission, accordingly.
 ```
 
 #### Installation via GitHub
 
 ```
-% git clone https://github.com/naryal2580/sech3r.git
-% cd sech3r
-% python3 -n pip install -r -U requirements.txt  # Super User permission, accordingly.
-% python3 setup.py install
+$ git clone https://github.com/naryal2580/sech3r.git
+$ cd sech3r
+$ python3 setup.py install # Super User permission, accordingly.
 ```
 
-##### Note: Usage without installation is also possible, just run the `sech3r.py`
+##### Note: Usage without installation is also possible, just run the `sech3r.py` after installing dependencies from `requirements.txt`
 
 
 
