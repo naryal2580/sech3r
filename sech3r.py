@@ -35,10 +35,22 @@ __version__ = "4.4"
 
 
 from secher import *
-from docopt import docopt
 
 
 def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=True):
+    """
+    `main` Function of sech3r.
+
+        Parameters:
+            urls (list): List of URL strings
+            verbose (bool): Is verbosity necessary
+            search4cves (bool): Shall tool search for CVEs from disclosed version
+            noRedirects (bool): Shall redirections occur, while requesting for headers
+            color (bool): Shall color be printed while function is running
+        
+        Returns:
+            url (str): URL string after prepending or modifying scheme to http
+    """
     if urls:
         print(takenInput(f"URL(s) separated with double <space> -> {'  '.join(urls)}", color))
 
@@ -79,6 +91,16 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, color=Tru
 
 
 def run():
+    """
+    `run` function of sech3r, function to be executed whenever sech3r is supposed to be executed. Does argument parsing, and controls exits too.
+        
+        Parameters:
+            Nothing
+
+        Returns:
+            Nothing
+    """
+    from docopt import docopt
     args = docopt(__doc__, version='SéCh3r v{}'.format(__version__))
     color = True
     verbose = search4cves = noRedirects = False

@@ -1,18 +1,28 @@
-from re import compile as reCompile
 from urllib import request
 from urllib.parse import urlparse
 from .style import *
 
 
 class NoRedirects(request.HTTPRedirectHandler):
-    """Class to handle HTTP Rediect"""
+    """
+    Class to handle HTTP Rediect, to be installed via opener on request object.
+    """
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         return None
 
 
 
 def validateUrl(url, color=True):
-    """Validation if protocol is specified, prepend if not"""
+    """
+    Returns url string after adding scheme if not present, and modofying scheme if not http.
+
+        Parameters:
+            url (str): URL string
+            color (bool): Shall color be printed while function is running
+        
+        Returns:
+            url (str): URL string after prepending or modifying scheme to http
+    """
     parsedUrl = urlparse(url)
     if not parsedUrl.scheme:
         url = 'http://' + url
@@ -26,7 +36,17 @@ def validateUrl(url, color=True):
 
 
 def getHeaders(url, noRedirects=False, color=True):
-    """Requests Headers of queried URL"""
+    """
+    Returns HTTP Headers of a queried URL.
+
+        Parameters:
+            url (str): URL string
+            noRedirects (bool): Shall redirection be followed
+            color (bool): Shall color be printed while function is running
+        
+        Returns:
+            headers (dict): HTTP Headers of a queried URL
+    """
     try:
         if noRedirects:
             opener = request.build_opener(NoRedirects)
@@ -52,7 +72,16 @@ def getHeaders(url, noRedirects=False, color=True):
 
 
 def checkSecHeads(headers):
-    """Checks if security headers present, or not"""
+    """
+    Check for Security Headers.
+
+        Parameters:
+            headers (dict): HTTP Headers
+        
+        Returns:
+            headersPresent (dict): HTTP security headers present with it's values
+            headersNotPresent (list): HTTP security headers not present
+    """
     headersPresent = {}
     headersNotPresent = []
     security_headers = [
@@ -77,8 +106,17 @@ def checkSecHeads(headers):
     return headersPresent, headersNotPresent
 
 
-def checkInfoHeads(headers, searchForVuln=False, color=True):
-    """Checks for informative headers"""
+def checkInfoHeads(headers):
+    """
+    Check for Informative Headers.
+
+        Parameters:
+            headers (dict): HTTP Headers
+        
+        Returns:
+            disclosedOnes (dict): Informative HTTP headers with disclosed version
+            undisclosedOnes (dict): Informative HTTP headers with version not disclosed
+    """
     version_disclosure_headers = [
                                     'Server',
                                     'X-AspNet-Version',
