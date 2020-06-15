@@ -19,7 +19,7 @@ Options:
     -v --verbose        Show verbose output.
     -s --searchForVuln  Open Default WebBrowser, Googling for Vulnerabilities.
     -r --noRedirects    Do not follow HTTP-redirects.
-    -i --insecure       Bypass TLS/SSL verification.
+    -k --insecure       Bypass TLS/SSL verification.
     -c --noColor        No Colours to be used for the Output.
     -q --quiet          Silent Mode, nothing else not even colors.
 
