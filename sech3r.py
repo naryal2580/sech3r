@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-     /  __       ____
+`    /  __       ____
  ()  _ / () |)    __/ ,_
  /\ |/|     |/\     \/  |
 /(_)|_/\___/|  |/\__/   |/
@@ -34,7 +34,7 @@ Examples:
 
 
 __author__ = "naryal2580"
-__version__ = "4.6"
+__version__ = "4.7"
 
 
 from secher import *
@@ -51,9 +51,6 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, insecure=
             noRedirects (bool): Shall redirections occur, while requesting for headers
             insecure (bool): Ignore TLS/SSL warnings
             color (bool): Shall color be printed while function is running
-        
-        Returns:
-            Nothing
     """
     if not quiet:
         if urls:
@@ -61,59 +58,68 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, insecure=
         else:
             urls = coolInput('URL(s) separated with double <space>', color).split('  ')
         print(info(f'Started [at] {fetchFormatedTime()}  -> Now, Requesting', color), end='\n\n')
-    
+
     if quiet and not urls:
-        banner(__version__, color)
-        print(bad('Duh! -> Give some urls from argument.'))
-        coolExit(1, color)
+        if __name__ == '__main__':
+            banner(__version__, color)
+            print(bad('Duh! -> Give some urls from argument.'))
+            coolExit(1, color)
+        else:
+            print('ERROR: You forgot to pass urls (list)')
 
     for url in urls:
-        if not quiet:
+        if quiet:
+            print(f'URL: {url}')
+        else:
             if len(urls) > 1:
                 print(info(f'Requesting -> {url}', color))
-        else:
-            print(f'URL: {url}')
-        url = validateUrl(url, color, quiet)
+
+        url = schemizeUrl(url, color, quiet)
+
         if not quiet:
-            if url.startswith('http://'):
-                print(warn('Warning -> Crafting a non TLS request', color))
-            if insecure:
+            if url.startswith('http'+'://'):
+                print(warn('Warning -> Crafting a non-TLS request', color))
+            if insecure and url.startswith('https://'):
                 print(warn('Warning -> Bypassing TLS verification'))
-        heads = getHeaders(url, noRedirects, insecure, color, quiet)
-        if heads:
+
+        headers = getHeaders(url, noRedirects, insecure, color, quiet)
+
+        if headers:
             if verbose:
                 print(info('Response Headers -> below:', color))
-                for head in heads:
-                    print(takenInput(f'{head}: {heads[head]}', color))
-            secHeads = checkSecHeads(heads)
-            secHeadsPresent = secHeads[0]
-            secHeadsNotPresent = secHeads[1]
-            infoHeads = checkInfoHeads(heads)
-            vulnHeads = infoHeads[0]
-            infoHeads = infoHeads[1]
-            if secHeadsPresent:
-                prnHeads(secHeadsPresent, color, False, quiet)
-            if secHeadsNotPresent:
-                prnHeads(secHeadsNotPresent, color, True, quiet)
-            if vulnHeads:
+                for header in headers:
+                    print(takenInput(f'{header}: {headers[header]}', color))
+
+            securityHeaders = checkSecurityHeaders(headers)
+            securityHeadersPresent, securityHeadersNotPresent = securityHeaders
+            informativeHeaders = checkInformativeHeaders(headers)
+            vulnerableHeaders, informativeHeaders = informativeHeaders
+
+            if securityHeadersPresent:
+                printHeaders(securityHeadersPresent, color, False, quiet)
+
+            if securityHeadersNotPresent:
+                printHeaders(securityHeadersNotPresent, color, True, quiet)
+
+            if vulnerableHeaders:
                 if search4cves:
-                    for vulnHead in vulnHeads:
-                        google(f'{vulnHeads[vulnHead]} CVE')
-                prnHeads(vulnHeads, color, True, quiet)
-            if infoHeads:
-                prnHeads(infoHeads, color, False, quiet)
+                    for vulnerableHeader in vulnerableHeaders:
+                        google(f'{vulnerableHeaders[vulnerableHeader]} CVE')
+                printHeaders(vulnerableHeaders, color, True, quiet)
+
+            if informativeHeaders:
+                printHeaders(informativeHeaders, color, False, quiet)
+
+            if quiet:
+                if urls[-1] == url or urls[-1] == url.split('://')[1]:
+                    return
             print()
 
 
 def run():
     """
-    `run` function of sech3r, function to be executed whenever sech3r is supposed to be executed. Does argument parsing, and controls exits too.
-        
-        Parameters:
-            Nothing
-
-        Returns:
-            Nothing
+    Function to be executed whenever sech3r is supposed to be executed.
+    Does command-line argument parsing, etc..
     """
     from docopt import docopt
     args = docopt(__doc__, version='SéCh3r v{}'.format(__version__))
@@ -131,11 +137,10 @@ def run():
         insecure = True
     if args['--quiet']:
         quiet = True
-        # color = False
-        
+
     if not quiet:
         banner(__version__, color)
-    
+
     if verbose:
         if not quiet:
             print(info('Verbosity -> Enabled', color))

@@ -6,9 +6,6 @@ def banner(version, color=True):
     
         Parameters:
             version (int): Version of SéCh3r
-        
-        Returns:
-            None: Literally None object :p
     """
     _banner = """
      /  __       ____
@@ -19,10 +16,9 @@ def banner(version, color=True):
         print(f"{rst}{bold}{_banner}{rst}  v{version} by --{bold}naryal2580{rst}")
     else:
         print(f"{_banner}  v{version} by --naryal2580")
-    return None
 
 
-def prnHeads(headers, color=True, isVuln=True, quiet=False):
+def printHeaders(headers, color=True, isVuln=True, quiet=False):
     """
     Printing headers with fanciness
     
@@ -30,9 +26,6 @@ def prnHeads(headers, color=True, isVuln=True, quiet=False):
             headers (dict/list): Headers based on condition
             color (bool): Shall color be printed while function is running
             isVuln (bool): Are passed headers vulnerability
-        
-        Returns:
-            None: Literally None object :p
     """
     if not quiet:
         if isVuln:
@@ -49,4 +42,6 @@ def prnHeads(headers, color=True, isVuln=True, quiet=False):
         if type(headers) != list:
             for header in headers:
                 print(f'{header}: {headers[header]}')
-    return None
+
+
+del blink, blue, blue_l, cyan, cyan_l, dim, green, green_l, hidden, invert, italic, normal, purple, purple_l, red, red_l, strike, uline, white, white_l, yellow, yellow_l

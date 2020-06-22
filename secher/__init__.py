@@ -1,7 +1,9 @@
+
+__author__ = "naryal2580"
+__version__ = "4.7"
+
 from .core import *
 from .extra import *
 
-__author__ = "naryal2580"
-__version__ = "4.6"
 
-del blink, blue, blue_l, bold, core, cyan, cyan_l, dim, extra, good, green, green_l, hidden, invert, italic, NoRedirects, normal, purple, purple_l, red, red_l, request, rst, strike, style, uline, webrowser_openNewTab, white, white_l, yellow, yellow_l
+del core, extra, style, bold, rst

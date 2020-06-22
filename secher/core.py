@@ -1,32 +1,34 @@
-from urllib import request
-from urllib.parse import urlparse
+__version__ = "4.7"
+
+from urllib import request as _request
+from urllib.parse import urlparse as _urlparse
 from ssl import _create_unverified_context
 from .style import *
 
 
-class NoRedirects(request.HTTPRedirectHandler):
+class _NoRedirects(_request.HTTPRedirectHandler):
     """
-    Class to handle HTTP Rediect, to be installed via opener on request object.
+    Sub-class to handle HTTP Rediect, to be installed via opener on request object.
     """
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
+        pass
 
 
 
-def validateUrl(url, color=True, quiet=False):
+def schemizeUrl(url, color=True, quiet=False):
     """
     Returns url string after adding scheme if not present, and modofying scheme if not http.
 
         Parameters:
             url (str): URL string
             color (bool): Shall color be printed while function is running
-        
+
         Returns:
             url (str): URL string after prepending or modifying scheme to http
     """
-    parsedUrl = urlparse(url)
+    parsedUrl = _urlparse(url)
     if not parsedUrl.scheme:
-        url = 'http://' + url
+        url = 'http'+'://' + url
     elif parsedUrl.scheme not in ('http', 'https'):
         if not quiet:
             print(bad(f'Scheme `{parsedUrl.scheme}` does not looks like of `http`', color))
@@ -39,30 +41,30 @@ def validateUrl(url, color=True, quiet=False):
 
 def getHeaders(url, noRedirects=False, insecure=False, color=True, quiet=False):
     """
-    Returns HTTP Headers of a queried URL.
+    Returns HTTP Headers of a queried URL with a GET HTTP request.
 
         Parameters:
             url (str): URL string
             noRedirects (bool): Shall redirection be followed
             insecure (bool): Ignore TLS/SSL warnings
             color (bool): Shall color be printed while function is running
-        
+
         Returns:
             headers (dict): HTTP Headers of a queried URL
     """
     try:
         if noRedirects:
-            opener = request.build_opener(NoRedirects)
-            request.install_opener(opener)
-        req = request.Request(
+            opener = _request.build_opener(_NoRedirects)
+            _request.install_opener(opener)
+        req = _request.Request(
                                 url,
                                 data=None,
-                                headers={'User-Agent': 'sech3r/4.2'}
+                                headers={'User-Agent': f'sech3r/{__version__}'}
                             )
-        if not insecure:
-            resp = request.urlopen(req)
+        if not insecure or url.startswith('http'+'://'):
+            resp = _request.urlopen(req)
         else:
-            resp = request.urlopen(req, context=_create_unverified_context())
+            resp = _request.urlopen(req, context=_create_unverified_context())
         if resp.url != url:
             if not quiet:
                 if resp.url.startswith('https://'):
@@ -73,7 +75,7 @@ def getHeaders(url, noRedirects=False, insecure=False, color=True, quiet=False):
         if not quiet:
             print(bad(str(excptn).replace(': ', ' -> '), color))
         else:
-            print(f'ERROR: {excptn}', end='\n\n')
+            print(f'ERROR: {excptn}')
         if 'HTTP Error' in str(excptn):
             resp = excptn
         else:
@@ -81,13 +83,13 @@ def getHeaders(url, noRedirects=False, insecure=False, color=True, quiet=False):
     return dict(resp.headers)
 
 
-def checkSecHeads(headers):
+def checkSecurityHeaders(headers):
     """
     Check for Security Headers.
 
         Parameters:
             headers (dict): HTTP Headers
-        
+
         Returns:
             headersPresent (dict): HTTP security headers present with it's values
             headersNotPresent (list): HTTP security headers not present
@@ -116,13 +118,13 @@ def checkSecHeads(headers):
     return headersPresent, headersNotPresent
 
 
-def checkInfoHeads(headers):
+def checkInformativeHeaders(headers):
     """
-    Check for Informative Headers.
+    Check for Informative Headers, like version disclosure.
 
         Parameters:
             headers (dict): HTTP Headers
-        
+
         Returns:
             disclosedOnes (dict): Informative HTTP headers with disclosed version
             undisclosedOnes (dict): Informative HTTP headers with version not disclosed
@@ -141,5 +143,3 @@ def checkInfoHeads(headers):
             else:
                 undisclosedOnes[header] = headers[header]
     return disclosedOnes, undisclosedOnes
-
-
