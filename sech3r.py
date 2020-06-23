@@ -7,25 +7,29 @@
 /(_)|_/\___/|  |/\__/   |/
 
 Usage:
-    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor] [--quiet]
-    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor] [--quiet]
+    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor] [--quiet] [--output <filename>]
+    sech3r <urls>... [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor] [--quiet] [--output <filename>]
+    sech3r [--verbose] [--searchForVuln] [--noRedirects] [--insecure] [--noColor] [--quiet] [--input <filename>] [--output <filename>]
     sech3r -h | --help
     sech3r -V | --version
 
 Options:
-    -h --help           Display help, basically this screen.
-    -V --version        Display version number.
-    <urls>              Optional URL(s) input from the Command-Line.
-    -v --verbose        Show verbose output.
-    -s --searchForVuln  Open Default WebBrowser, Googling for Vulnerabilities.
-    -r --noRedirects    Do not follow HTTP-redirects.
-    -k --insecure       Bypass TLS/SSL verification.
-    -c --noColor        No Colours to be used for the Output.
-    -q --quiet          Silent Mode, nothing else not even colors.
+    -h --help               Display help, basically this screen.
+    -V --version            Display version number.
+    <urls>                  Optional URL(s) input from the Command-Line.
+    -v --verbose            Show verbose output.
+    -s --searchForVuln      Open Default WebBrowser, Googling for Vulnerabilities.
+    -r --noRedirects        Do not follow HTTP-redirects.
+    -k --insecure           Bypass TLS/SSL verification.
+    -c --noColor            No Colours to be used for the Output.
+    -q --quiet              Silent Mode, nothing else not even colors.
+    -i --input <filename>   Take URLs from a file, Single URL per line
+    -o --output <filename>  Save output to a file, a JSON output of headers
 
 Examples:
     sech3r demo.testfire.net
-    sech3r demo.testfire.net -vs
+    sech3r demo.testfire.net -i in.json
+    sech3r demo.testfire.net -vs -o out.json
     sech3r demo.testfire.net -vr
     sech3r demo.testfire.net -c
     sech3r demo.testfire.net -q
@@ -34,7 +38,7 @@ Examples:
 
 
 __author__ = "naryal2580"
-__version__ = "4.7"
+__version__ = "4.8"
 
 
 from secher import *
@@ -51,7 +55,11 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, insecure=
             noRedirects (bool): Shall redirections occur, while requesting for headers
             insecure (bool): Ignore TLS/SSL warnings
             color (bool): Shall color be printed while function is running
+
+        Returns:
+            output (dict): Output from the function in a dictionary
     """
+    output = {}
     if not quiet:
         if urls:
             print(takenInput(f"URL(s) separated with double <space> -> {'  '.join(urls)}", color))
@@ -110,10 +118,21 @@ def main(urls=[], verbose=False, search4cves=False, noRedirects=False, insecure=
             if informativeHeaders:
                 printHeaders(informativeHeaders, color, False, quiet)
 
-            if quiet:
-                if urls[-1] == url or urls[-1] == url.split('://')[1]:
-                    return
-            print()
+            output[url] = {
+                            'Security Headers Present': securityHeadersPresent,
+                            'Security Headers Not Present': securityHeadersNotPresent,
+                            'Vulnerable Headers': vulnerableHeaders,
+                            'Informative Headers': informativeHeaders
+                        }
+        else:
+            output[url] = {}
+
+        if quiet:
+            if urls[-1] == url or urls[-1] == url.split('://')[1]:
+                return output
+        print()
+
+    return output
 
 
 def run():
@@ -124,7 +143,7 @@ def run():
     from docopt import docopt
     args = docopt(__doc__, version='SéCh3r v{}'.format(__version__))
     color = True
-    verbose = search4cves = noRedirects = insecure = quiet = False
+    verbose = search4cves = noRedirects = insecure = quiet = output_filename = input_filename = False
     if args['--noColor']:
         color = False
     if args['--verbose']:
@@ -137,6 +156,10 @@ def run():
         insecure = True
     if args['--quiet']:
         quiet = True
+    if args['--input']:
+        input_filename = args['--input']
+    if args['--output']:
+        output_filename = args['--output']
 
     if not quiet:
         banner(__version__, color)
@@ -166,9 +189,29 @@ def run():
             coolExit(1, color)
 
     if args['<urls>']:
-        main(args['<urls>'], verbose, search4cves, noRedirects, insecure, color, quiet)
+        output = main(args['<urls>'], verbose, search4cves, noRedirects, insecure, color, quiet)
+    elif input_filename:
+        if not quiet:
+            print(info(f'Input file -> {input_filename}'))
+        urls = read_url_from_file(input_filename)
+        if urls:
+            output = main(urls, verbose, search4cves, noRedirects, insecure, color, quiet)
+        else:
+            print(bad(f'Wait! -> File not found or the file is empty'))
+            coolExit(1, color)
     else:
-        main([], verbose, search4cves, noRedirects, insecure, color, quiet)
+        output = main([], verbose, search4cves, noRedirects, insecure, color, quiet)
+
+    if output_filename:
+        if not quiet:
+            print(info(f'Output File -> {output_filename}'))
+        with open(output_filename, 'w') as output_file:
+            from json import dump as _dump
+            _dump(
+                    output,
+                    output_file,
+                    indent=2
+                )
 
     if not quiet:
         coolExit(0, color)

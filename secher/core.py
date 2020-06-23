@@ -1,8 +1,9 @@
-__version__ = "4.7"
+__version__ = "4.8"
 
 from urllib import request as _request
 from urllib.parse import urlparse as _urlparse
 from ssl import _create_unverified_context
+from os.path import isfile as _isfile
 from .style import *
 
 
@@ -143,3 +144,10 @@ def checkInformativeHeaders(headers):
             else:
                 undisclosedOnes[header] = headers[header]
     return disclosedOnes, undisclosedOnes
+
+
+def read_url_from_file(filename):
+    if filename:
+        if _isfile(filename):
+            with open(filename) as input_file:
+                return input_file.read().strip().split('\n')
