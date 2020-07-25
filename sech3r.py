@@ -38,7 +38,7 @@ Examples:
 
 
 __author__ = "naryal2580"
-__version__ = "4.8"
+__version__ = "4.9"
 
 
 from secher import *

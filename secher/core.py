@@ -1,10 +1,11 @@
-__version__ = "4.8"
+__version__ = "4.9"
 
 from urllib import request as _request
 from urllib.parse import urlparse as _urlparse
 from ssl import _create_unverified_context
 from os.path import isfile as _isfile
 from .style import *
+from .extra import CaseInsensitiveDict
 
 
 class _NoRedirects(_request.HTTPRedirectHandler):
@@ -81,7 +82,7 @@ def getHeaders(url, noRedirects=False, insecure=False, color=True, quiet=False):
             resp = excptn
         else:
             return {}
-    return dict(resp.headers)
+    return CaseInsensitiveDict(resp.headers)
 
 
 def checkSecurityHeaders(headers):
@@ -138,7 +139,7 @@ def checkInformativeHeaders(headers):
     disclosedOnes = {}
     undisclosedOnes = {}
     for header in version_disclosure_headers:
-        if header in headers.keys():
+        if header in headers:
             if any(char.isdigit() for char in headers[header]):
                 disclosedOnes[header] = headers[header]
             else:
